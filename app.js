@@ -1,6 +1,18 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const app = express();
+const mongoose = require('mongoose');
+
+mongoose.Promise= global.Promise;
+
+// Connect to mongoose
+mongoose.connect('mongodb://localhost/vidjot-dev', {
+    useMongoClient: true
+})
+    .then(() => {
+        console.log('MongoDB connected')
+    })
+    .catch(err => console.log(err));
 
 // Middleware
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -13,7 +25,7 @@ app.get('/', (req, res) => {
 
 // About route
 app.get('/about', (req, res) => {
-    res.send('ABOUT')
+    res.render('about')
 });
 
 const port = 5000;
