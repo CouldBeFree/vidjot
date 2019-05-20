@@ -49,15 +49,20 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
         _id: req.params.id
     })
         .then(ideas => {
-            res.render('ideas/edit', {
-                ideas: ideas
-            })
+            if(ideas.user != req.user.id){
+                req.flash('error_msg', 'Not Authorized');
+                res.redirect('/ideas')
+            } else{
+                res.render('ideas/edit', {
+                    ideas: ideas
+                })
+            }
         })
 });
 
 // Idea index page
 router.get('/', ensureAuthenticated, (req, res) => {
-    Idea.find({})
+    Idea.find({user: req.user.id})
         .sort({date:'desc'})
         .then(ideas => {
             res.render('ideas/index', {
